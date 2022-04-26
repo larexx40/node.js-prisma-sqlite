@@ -1,0 +1,16 @@
+{
+  "name": "prisma-prac",
+  "version": "1.0.0",
+  "description": "\"working with prisma.io ORM \"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "R. O. Olatunji",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^3.12.0",
+    "body-parser": "^1.20.0",
+    "express": "^4.18.0"
+  }
+}
