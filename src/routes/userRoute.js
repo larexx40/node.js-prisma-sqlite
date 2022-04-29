@@ -7,3 +7,5 @@ userRouter.get('/login')
 userRouter.put('/edit')
 userRouter.delete('/deleteall')
 userRouter.delete('/delete/:id')
+
+module.exports = userRouter;

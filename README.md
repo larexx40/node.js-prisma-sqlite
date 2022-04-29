@@ -1,2 +1,2 @@
-# Prisma wit SQLite 
-This project shows an example of how to use prisma ORM with SQLite database 
+# Prisma ORM with SQLite DB
+This project shows an how to use prisma ORM with SQLite database 
