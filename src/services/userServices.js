@@ -137,7 +137,41 @@ const createUser = async(reqBody)=>{
 
     }
 
+const login = async(reqBody)=>{
+    //validate request body
+    //try to pass in only username and password
+    const validateLoginRequest =await validateLoginReqBody(reqBody);
+    if(!validateLoginRequest.validated){
+        return validateLoginRequest.error
+    }
+    const data = validateLoginRequest.value;
+    console.log(data);
+ 
+    //check if user exist
+    const user = await userRepositry.isUserExist(data.email)
+    console.log({msg: "return userExist", data: user});
+    if(!user){
+        return {
+            validated: false,
+            error: {msg: "Email does not exist"},
+            status: 404
+        }
+    }
+    //decrypt password
+    if(user && await decryptPassword(data.password, user.password)){
+        //generate token
+        user.token = await token(user.id, user.email);
+        console.log(user);
+        return {
+            validated: true, 
+            user, 
+            status: 200
+        } // include jwt //include jwt
+    }
 
+
+
+}
 //isaccountverified
 
 module.exports = {
