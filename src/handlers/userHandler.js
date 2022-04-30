@@ -1,10 +1,17 @@
-/*
-handle signup
-=validate data
-=check if user exist
-=encrypt password
-=save data
-*/
+const userSevices = require('../services/userServices');
+
+const handleSignIn = async (req, res)=>{
+    const data = req.body
+    const response = await userSevices.createUser(data)
+    return res.status(response.status ?? 200).json(response)
+}
+
+const handleLogin = async (req, res)=>{
+    //{email, password}=req.body
+    const data = req.body
+    const response = await userSevices.login(data)
+    return res.status(response.status ?? 200).json({msg: "login successful", response})
+}
 
 /*
 handle sign in
@@ -20,3 +27,8 @@ handle forget password
 
 //handle dataValidation
 //handle
+
+module.exports = {
+    handleSignIn,
+    handleLogin,
+}

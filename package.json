@@ -4,13 +4,19 @@
   "description": "\"working with prisma.io ORM \"",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js"
   },
   "author": "R. O. Olatunji",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^3.12.0",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
-    "express": "^4.18.0"
+    "dotenv": "^16.0.0",
+    "express": "^4.18.0",
+    "joi": "^17.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "nodemon": "^2.0.16"
   }
 }
