@@ -3,6 +3,7 @@ const Joi = require('joi');
 const userRepositry = require('../repositories/userRepository');
 const bcrypt = require('bcryptjs');
 const jwt  = require('jsonwebtoken');
+const auth = require('./authServices')
 
 
 const validateSignupReqBody= async (reqBody)=>{
@@ -91,9 +92,6 @@ const validateLoginReqBody = async (reqBody)=>{
 const encryptPassword = async(password)=> await bcrypt.hash(password, 10);
 const decryptPassword = async(password, hash)=> await bcrypt.compare(password, hash);
 
-const token =async (id, email)=> jwt.sign({id, email}, process.env.JWT_SECRET,{
-    expiresIn: '2h'
-})
 const createUser = async(reqBody)=>{
     //validate request body
     const validateUserRequest =await validateSignupReqBody(reqBody);
@@ -124,14 +122,14 @@ const createUser = async(reqBody)=>{
         
 
         //generate token
-        user.token = await token(user.id, user.email);
+        user.token = await auth.createToken(user.id, user.email);
         console.log({msg: "user saved, return user", user: user});
 
         return {
             validated: true, 
-            user, 
+            user, //includes token
             status: 200
-        } // include jwt
+        }
 
     }
 
@@ -160,13 +158,13 @@ const login = async(reqBody)=>{
     //decrypt password
     if(user && await decryptPassword(data.password, user.password)){
         //generate token
-        user.token = await token(user.id, user.email);
+        user.token = await auth.createToken(user.id, user.email);
         console.log(user);
         return {
             validated: true, 
-            user, 
+            user, //includes token
             status: 200
-        } // include jwt //include jwt
+        }
     }
 
 
