@@ -87,6 +87,17 @@ const validateLoginReqBody = async (reqBody)=>{
     }
 }
 
+const updateUser = async (reqBody)=>{
+    const update = {}
+    if(reqBody.password !== null){ 
+        update.password = reqBody.password
+    }
+    if(reqBody.name !== null){
+        update.name = reqBody.name
+    }
+    
+    userRepositry.updateUser(id, update)
+}
 
 
 const encryptPassword = async(password)=> await bcrypt.hash(password, 10);
@@ -176,6 +187,7 @@ module.exports = {
     //validateSignupReqBody, 
     //encryptPassword,
     //decryptPassword, 
+    updateUser,
     createUser,
     login
 }

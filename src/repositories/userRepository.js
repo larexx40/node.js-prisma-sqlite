@@ -31,10 +31,14 @@ const createUser =  async(user)=>{
 } 
 
 
-const updateUser = async(user)=>{
-    const updateuser = await prisma.user.update({where:{
-        data:{user}
-    }})
+const updateUser = async(id, update)=>{
+    const updateuser = await prisma.user.update({
+        where:{id: id},
+        data:{...update},
+        select:{
+            id:true,username:true,name:true,email:true,phoneNo:true
+        }
+    })
 }
 
 const deleteUser = async(key)=>{
@@ -65,6 +69,7 @@ const isUserExist = async(email, username, phoneNo)=>{
     })
     return user
 }
+
 
 module.exports ={
     getAllUsers,
