@@ -100,6 +100,7 @@ const resetPassword = async(id, token, password)=>{
     await userRepository.updateUser(id, {password: newPassword})
     //send successfull mail
     //delete token
+    await tokenRepository.deleteToken(isTokenExist.id)
 }
 
 module.exports = {
