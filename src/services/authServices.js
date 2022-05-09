@@ -1,9 +1,11 @@
 require ('dotenv').config()
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto')
+const crypto = require('crypto');
+const sendMail = require('./nodemailerService')
 const userRepository = require('../repositories/userRepository');
 const tokenRepository = require('../repositories/tokenRepository');
 const bcrypt = require('bcrypt');
+const Joi = require('joi')
 
 const createToken =async (id, email)=> jwt.sign({id, email}, process.env.JWT_SECRET,{
     expiresIn: '2h'
@@ -42,6 +44,19 @@ const verifyToken = async (authHeader)=>{
 }
 
 const requestResetPassword = async (email)=>{
+    //validate mail
+    const schema = Joi.object().keys({
+        mail: Joi.string().email().required()
+    })
+    const {error, value} = schema.validate({email,})
+    if (error) {
+        console.log("error", error)
+        return {
+            msg: "email input not valid",
+            error,
+            status: 403
+        }
+    }
     //check if user exist
     const user =await userRepository.isUserExist(email);
     if(!user){
@@ -65,13 +80,18 @@ const requestResetPassword = async (email)=>{
     const newToken = {userId: user.id, token: hashToken} 
     await tokenRepository.createToken(newToken)
 
-    //send plain token to user email
+    //send link to email
+    //const link = `${clientURL}/passwordReset?token=${resetToken}&id=${user.id}`;
 
-    const link = `${clientURL}/passwordReset?token=${resetToken}&id=${user.id}`;
+    //send plain token to user email
+    sendMail.resetPasswordMail(user.username, user.email, resetToken)
+
+    
     //return link
 
     return{
         msg: "verification token sent to your email",
+        token: resetToken,
         status: 200
     }
 }

@@ -1,5 +1,6 @@
 const express = require("express");
 const userHandler = require('../handlers/userHandler');
+const authHandler = require('../handlers/authHandler')
 const userRouter =express.Router();
 
 
@@ -10,7 +11,7 @@ userRouter.put('/edit')
 userRouter.delete('/deleteall')
 userRouter.delete('/delete/:id')
 
-userRouter.get('/home', userHandler.handleAuthToken, (req, res)=>{
+userRouter.get('/home', authHandler.handleAuthToken, (req, res)=>{
     res.status(200).send("Welcome 🙌 ");
 })
 
