@@ -4,30 +4,31 @@ const crypto = require('crypto');
 const sendMail = require('./nodemailerService')
 const userRepository = require('../repositories/userRepository');
 const tokenRepository = require('../repositories/tokenRepository');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const Joi = require('joi')
 
 const createToken =async (id, email)=> jwt.sign({id, email}, process.env.JWT_SECRET,{
     expiresIn: '2h'
 })
 
-const verifyToken = async (authHeader)=>{
-    if(!authHeader){
+const verifyToken = async (authToken)=>{
+    if(!authToken){
         return {
             auth: false,
             msg: "Token is required for authentication",
-            status: 403 //forbiden
+            status: 401 //unauthorized
         }
     }
-    const token = authHeader.split(' ')[1];
+    const token = authToken.spli(' ')[1]
+    console.log({msg: "new token", token: token});
     try {
         const decoded =  jwt.verify(token, process.env.JWT_SECRET)
         console.log({msg: 'decode token to', decoded: decoded});
-        if(!decoded.auth){
+        if(!decoded){
             return {
-                auth: decoded.auth, 
-                msg: `${decoded.msg} or Expired Token`,
-                status: decoded.status
+                auth: false ,
+                msg: 'Invalid or Expired Token',
+                status: 401 //unauthorized 
             }
         }else{
         return decoded
@@ -36,8 +37,8 @@ const verifyToken = async (authHeader)=>{
     } catch (error) {
         return {
             auth: false, 
-            msg: "Invalid Token",
-            status: 500
+            msg: "Error Invalid Token",
+            status: 401 //unauthorized;
         }
     }
 
