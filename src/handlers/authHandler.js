@@ -1,11 +1,11 @@
 const auth = require('../services/authServices');
 
 const handleAuthToken = async (req, res, next)=>{
-    const authHeader = req.body.token || req.header('Authorizations');
+    const authToken = req.headers['authorization'];
 
-    console.log({msg: "my auth token is ", token: authHeader});
+    console.log({msg: "my auth token is ", token: authToken});
     //authServices.jwtAuth(token)
-    const response = await auth.verifyToken(authHeader);
+    const response = await auth.verifyToken(authToken);
     console.log(response);
     res.status(response.status ?? 200).json(response);
 
