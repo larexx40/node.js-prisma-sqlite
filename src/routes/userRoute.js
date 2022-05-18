@@ -12,7 +12,7 @@ userRouter.delete('/deleteall')
 userRouter.delete('/delete/:id')
 
 userRouter.get('/home', authHandler.handleAuthToken, (req, res)=>{
-    res.send("Welcome 🙌 ");
+    res.status(200).send("Welcome 🙌 ");
 })
 
 module.exports = userRouter;
