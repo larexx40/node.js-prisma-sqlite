@@ -19,11 +19,11 @@ const verifyToken = async (authToken)=>{
             status: 401 //unauthorized
         }
     }
-    const token = authToken.spli(' ')[1]
-    console.log({msg: "new token", token: token});
+    const token = authToken.split(' ')[1]
+    //console.log({msg: "new token", token: token});
     try {
         const decoded =  jwt.verify(token, process.env.JWT_SECRET)
-        console.log({msg: 'decode token to', decoded: decoded});
+        //console.log({msg: 'decode token to', decoded: decoded});
         if(!decoded){
             return {
                 auth: false ,

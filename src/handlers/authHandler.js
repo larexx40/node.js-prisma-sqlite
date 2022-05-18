@@ -6,9 +6,8 @@ const handleAuthToken = async (req, res, next)=>{
     console.log({msg: "my auth token is ", token: authToken});
     //authServices.jwtAuth(token)
     const response = await auth.verifyToken(authToken);
-    console.log(response);
-    res.status(response.status ?? 200).json(response);
-
+    console.log('our res',response);
+    req.user = response;
     return next()
 }
 
