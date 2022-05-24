@@ -1,7 +1,7 @@
 require ('dotenv').config()
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const sendMail = require('./nodemailerService')
+const mailService = require('./nodemailerService')
 const userRepository = require('../repositories/userRepository');
 const tokenRepository = require('../repositories/tokenRepository');
 const bcrypt = require('bcryptjs');
@@ -70,7 +70,7 @@ const requestResetPassword = async (email)=>{
     const isTokenExist = await tokenRepository.isTokenExist(user.id);
     //delete if exist
     if(isTokenExist){
-        await tokenRepository.deleteToken(token.id)
+        await tokenRepository.deleteToken(isTokenExist.id)
     }
 
     //create randomtoken
@@ -85,7 +85,12 @@ const requestResetPassword = async (email)=>{
     //const link = `${clientURL}/passwordReset?token=${resetToken}&id=${user.id}`;
 
     //send plain token to user email
-    sendMail.resetPasswordMail(user.username, user.email, resetToken)
+    const link = `click this link to reset your password 
+        ${process.env.BASE_URL}/passwordreset/${user.id}/${resetToken}`;
+    const subject = 'Reset Password'
+    //const text = `use the token below to reset your password ${token}`
+    mailService.sendEmail(user.email, subject, link )
+    console.log("Password reset sent successfully")
 
     
     //return link
