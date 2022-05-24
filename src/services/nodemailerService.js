@@ -56,7 +56,23 @@ const resetPasswordSuccessMail = async(username, email)=>{
     })
 }
 
+const sendEmail = async(email, subject, text)=>{
+    try {
+        const mailOptions = {
+            from: '"Lanre" <lanretunji47@gmail.com>',
+            to: email,
+            subject: subject,
+            text: text
+        }
+        await transporter.sendMail(mailOptions)
+        console.log("Email sent successfully");       
+    } catch (error) {
+        console.log("Email not sent");
+    }
+}
+
 module.exports = {
     resetPasswordMail,
-    resetPasswordSuccessMail
+    resetPasswordSuccessMail,
+    sendEmail
 }
