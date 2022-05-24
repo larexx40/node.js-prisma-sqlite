@@ -15,6 +15,15 @@ const handleLogin = async (req, res)=>{
     return res.status(response.status ?? 200).json({msg: "login successful", response})
 }
 
+const handleForgetPasword = async (req, res)=>{
+    //check if email exist
+    //send password reset link to mail
+    //verify link
+    //collect new password
+    //update database in db
+    //send success status
+}
+
 
 /*
 handle sign in
