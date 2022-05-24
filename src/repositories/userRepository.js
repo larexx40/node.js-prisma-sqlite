@@ -41,6 +41,16 @@ const updateUser = async(id, update)=>{
     })
 }
 
+const updatePassword = async(id, password)=>{
+    const updatePassword = await prisma.user.update({
+        where:{id: id},
+        data:{password: password},
+        select:{
+            id:true,username:true,name:true,email:true,phoneNo:true
+        }
+    })
+}
+
 const deleteUser = async(key)=>{
     const deleteUser = await prisma.user.delete({
         where:{
@@ -77,5 +87,6 @@ module.exports ={
     getUserWithKey,
     updateUser,
     deleteUser,
-    isUserExist
+    isUserExist,
+    updatePassword
 }
