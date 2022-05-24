@@ -15,4 +15,5 @@ userRouter.get('/home', authHandler.handleAuthToken, (req, res)=>{
     res.status(200).send("Welcome 🙌 ");
 })
 
+
 module.exports = userRouter;
