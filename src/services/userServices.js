@@ -4,6 +4,7 @@ const userRepositry = require('../repositories/userRepository');
 const bcrypt = require('bcryptjs');
 const jwt  = require('jsonwebtoken');
 const auth = require('./authServices')
+const validateServices = require('./validateServices')
 
 
 const validateSignupReqBody= async (reqBody)=>{
@@ -14,41 +15,7 @@ const validateSignupReqBody= async (reqBody)=>{
             status: 400
         }
     }
-
-    const schema = Joi.object({
-        username: Joi.string()
-            .alphanum()
-            .min(8)
-            .max(30)
-            .required(),
-    
-        password: Joi.string()
-            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
-    
-        email: Joi.string()
-            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
-        phoneNo: Joi.string().alphanum().required(),
-        name: Joi.string().required()
-    
-    }).required()
-    
-    const {username, email, name, phoneNo, password}= reqBody;
-    const { value, error } = schema.validate({username, email, name, phoneNo, password});
-    if (error) {
-        console.log("error", error)
-        return {
-            validated: false,
-            error,
-            status: 400
-        }
-
-    }else {
-        return {
-            validated: true,
-            value,
-            status:200
-        }
-    }
+    await validateServices.validateSignupDetails(reqBody)
 }
 
 const validateLoginReqBody = async (reqBody)=>{
@@ -59,32 +26,7 @@ const validateLoginReqBody = async (reqBody)=>{
             status: 400
         }
     }
-
-    const schema = Joi.object({    
-        email: Joi.string()
-            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
-        password: Joi.string()
-            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required()
-    
-    }).required()
-    
-    const {email, password}= reqBody;
-    const { value, error } = schema.validate({email, password});
-    if (error) {
-        console.log("error", error)
-        return {
-            validated: false,
-            error,
-            status: 400
-        }
-
-    }else {
-        return {
-            validated: true,
-            value,
-            status:200
-        }
-    }
+    await validateServices.validateLoginDetails(reqBody)
 }
 
 const updateUser = async (reqBody)=>{
@@ -105,11 +47,11 @@ const decryptPassword = async(password, hash)=> await bcrypt.compare(password, h
 
 const createUser = async(reqBody)=>{
     //validate request body
-    const validateUserRequest =await validateSignupReqBody(reqBody);
-    if(!validateUserRequest.validated){
-        return validateUserRequest.error
+    const validateReqBody =await validateSignupReqBody(reqBody);
+    if(!validateReqBody.validated){
+        return validateReqBody.error
     }
-    const data = validateUserRequest.value;
+    const data = validateReqBody.value;
     console.log({msg: 'validated reqbody', data: data});
 
     //check if user exist

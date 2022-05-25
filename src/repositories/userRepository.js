@@ -32,6 +32,7 @@ const createUser =  async(user)=>{
 
 
 const updateUser = async(id, update)=>{
+    //can only update name and password 
     const updateuser = await prisma.user.update({
         where:{id: id},
         data:{...update},
