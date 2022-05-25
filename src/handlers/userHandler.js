@@ -1,5 +1,5 @@
 const userSevices = require('../services/userServices');
-const jwtAuth = require('../services/authServices');
+const authService = require('../services/authServices');
 
 
 const handleSignIn = async (req, res)=>{
@@ -15,13 +15,25 @@ const handleLogin = async (req, res)=>{
     return res.status(response.status ?? 200).json({msg: "login successful", response})
 }
 
-const handleForgetPasword = async (req, res)=>{
+const handleForgetPaswordRequest = async (req, res)=>{
     //check if email exist
     //send password reset link to mail
     //verify link
     //collect new password
     //update database in db
     //send success status
+    const email= req.body;
+    const response = await authService.requestResetPassword(email)
+    return res.status(response.status ?? 200).json({msg: response.msg})
+
+}
+
+const handleResetPassord = async (req, res)=>{
+    const token = req.params.token
+    const userId = req.params.id
+    const password = req.body;
+    const response = await authService.resetPassword(userId, token , password);
+    return res.status(response.status ?? 200).json({msg: response.msg})
 }
 
 
@@ -43,4 +55,7 @@ handle forget password
 module.exports = {
     handleSignIn,
     handleLogin,
+    handleForgetPaswordRequest,
+    handleResetPassord,
+
 }
