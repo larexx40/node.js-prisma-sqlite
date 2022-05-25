@@ -5,7 +5,7 @@ const mailService = require('./nodemailerService')
 const userRepository = require('../repositories/userRepository');
 const tokenRepository = require('../repositories/tokenRepository');
 const bcrypt = require('bcryptjs');
-const Joi = require('joi')
+const validateServices = require('./validateServices')
 
 const createToken =async (id, email)=> jwt.sign({id, email}, process.env.JWT_SECRET,{
     expiresIn: '2h'
@@ -46,18 +46,8 @@ const verifyToken = async (authToken)=>{
 
 const requestResetPassword = async (email)=>{
     //validate mail
-    const schema = Joi.object().keys({
-        mail: Joi.string().email().required()
-    })
-    const {error, value} = schema.validate({email,})
-    if (error) {
-        console.log("error", error)
-        return {
-            msg: "email input not valid",
-            error,
-            status: 403
-        }
-    }
+    await validateServices.validateEmail(email)
+
     //check if user exist
     const user =await userRepository.isUserExist(email);
     if(!user){
@@ -86,25 +76,26 @@ const requestResetPassword = async (email)=>{
 
     //send plain token to user email
     const link = `click this link to reset your password 
-        ${process.env.BASE_URL}/passwordreset/${user.id}/${resetToken}`;
+        ${process.env.BASE_URL}/passwordreset/:${user.id}/:${resetToken}`;
     const subject = 'Reset Password'
     //const text = `use the token below to reset your password ${token}`
     mailService.sendEmail(user.email, subject, link )
-    console.log("Password reset sent successfully")
-
-    
-    //return link
+    console.log("Password reset sent successfully");
 
     return{
         msg: "verification token sent to your email",
         token: resetToken,
-        status: 200
+        status: 200,
+        link: link
     }
 }
 
-const resetPassword = async(id, token, password)=>{
+const resetPassword = async(userId, token, password)=>{
+    //validate new password
+    await validateServices.validatePassword(password)
+
     //check if user's token exist in db
-    const isTokenExist = await tokenRepository.isTokenExist(id)
+    const isTokenExist = await tokenRepository.isTokenExist(userId)
     //if ! return error
     if(!isTokenExist){
         return {
@@ -120,13 +111,25 @@ const resetPassword = async(id, token, password)=>{
             status: 403
         }
     }
+    //check expiry
+
     //if valid then hash new password
-    const newPassword = await bcrypt.hash(password, 10)
+    const newPassword = await bcrypt.hash(password, 10);
+
     //then save 
-    await userRepository.updateUser(id, {password: newPassword})
+    const updatePassword = await userRepository.updateUser(id, {password: newPassword})
+
     //send successfull mail
+    const subject ="Password reset successful"
+    const text = `Password successfully reset, proceed to login ${process.env.BASE_URL}/signup`
+    mailService.sendEmail(updatePassword.email, subject, text)
     //delete token
     await tokenRepository.deleteToken(isTokenExist.id)
+
+    return{
+        msg: "password changed, login again",
+        status: 200
+    }
 }
 
 module.exports = {
