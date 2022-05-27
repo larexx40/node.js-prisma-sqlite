@@ -91,9 +91,6 @@ const requestResetPassword = async (email)=>{
 }
 
 const resetPassword = async(userId, token, password)=>{
-    //validate new password
-    await validateServices.validatePassword(password)
-
     //check if user's token exist in db
     const isTokenExist = await tokenRepository.isTokenExist(userId)
     //if ! return error
@@ -113,6 +110,9 @@ const resetPassword = async(userId, token, password)=>{
     }
     //check expiry
 
+    //if token valid, validate passwword
+    await validateServices.validatePassword(password)
+    
     //if valid then hash new password
     const newPassword = await bcrypt.hash(password, 10);
 
