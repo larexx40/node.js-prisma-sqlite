@@ -37,6 +37,7 @@ const updateUser = async (reqBody)=>{
     if(reqBody.name !== null){
         update.name = reqBody.name
     }
+    const validatePassword = await validateServices.validatePassword(update.password)
     
     userRepositry.updateUser(id, update)
 }
