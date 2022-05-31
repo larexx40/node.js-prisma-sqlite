@@ -28,14 +28,17 @@ const handleForgetPaswordRequest = async (req, res)=>{
 
 }
 
-const handleResetPassord = async (req, res)=>{
-    const token = req.params.token
+const handleResetPassword = async (req, res)=>{
+    const token = req.body.token
     const userId = req.params.id
     const password = req.body;
-    const response = await authService.resetPassword(userId, token , password);
+    const response = await authService.resetPassword(userId, token, password);
     return res.status(response.status ?? 200).json({msg: response.msg})
 }
 
+const handleLogout = async()=>{
+
+}
 
 /*
 handle sign in
@@ -56,6 +59,7 @@ module.exports = {
     handleSignIn,
     handleLogin,
     handleForgetPaswordRequest,
-    handleResetPassord,
+    handleResetPassword,
+    handleLogout
 
 }

@@ -11,16 +11,6 @@ const handleAuthToken = async (req, res, next)=>{
     return next()
 }
 
-const resetPassword = async (res, req)=>{
-    const email = req.body;
-    const response = await auth.requestResetPassword(email);
-    console.log(response);
-    res.status(response.status ?? 200).json(response)
-}
-
-
-
 module.exports ={
     handleAuthToken,
-    resetPassword
 }

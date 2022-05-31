@@ -126,6 +126,10 @@ const login = async(reqBody)=>{
 }
 //isaccountverified
 
+//logout
+const logout = async ()=>{
+    
+}
 module.exports = {
     //validateSignupReqBody, 
     //encryptPassword,

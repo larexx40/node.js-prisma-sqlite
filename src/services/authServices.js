@@ -108,8 +108,16 @@ const resetPassword = async(userId, token, password)=>{
             status: 403
         }
     }
-    //check expiry
 
+    /** 
+    //check expiry
+    if((isTokenValid.epireAt - isTokenValid.createedAt) < 600000) {
+        //valid
+    }else{
+        //expired
+    }
+    */
+   
     //if token valid, validate passwword
     await validateServices.validatePassword(password)
     

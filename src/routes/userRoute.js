@@ -10,6 +10,7 @@ userRouter.post('/signin', userHandler.handleLogin)
 userRouter.put('/edit')
 userRouter.delete('/deleteall')
 userRouter.delete('/delete/:id')
+userRouter.get('/logout', userHandler.handleLogout)
 
 userRouter.get('/home', authHandler.handleAuthToken, (req, res)=>{
     res.status(200).send("Welcome 🙌 ");
